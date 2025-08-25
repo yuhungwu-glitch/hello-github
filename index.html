@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>樂活點餐練習</title>
+    <style>
+        /* CSS 樣式開始 */
+        body {
+            font-family: 'Noto Sans TC', sans-serif; /* 使用繁體中文常用字體 */
+            background-color: #F8F4E3; /* 淺黃色背景，柔和不刺眼 */
+            color: #333; /* 深灰色文字，高對比易讀 */
+            line-height: 1.6; /* 行高，增加閱讀舒適度 */
+        }
+        .container {
+            max-width: 800px; /* 限制內容最大寬度 */
+            margin: 0 auto; /* 置中顯示 */
+            padding: 20px; /* 內部邊距 */
+        }
+        .header {
+            text-align: center; /* 標題置中 */
+            margin-bottom: 40px; /* 標題下方間距 */
+        }
+        .title {
+            font-size: 2.5rem; /* 大標題字體大小 */
+            color: #5C5346; /* 深棕色標題文字 */
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 1.2rem; /* 副標題字體大小 */
+            color: #888; /* 灰色副標題文字 */
+        }
+        .menu-grid {
+            display: grid; /* 使用 Grid 佈局 */
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* 自動調整列寬 */
+            gap: 20px; /* 網格間距 */
+        }
+        .menu-item {
+            background-color: #fff; /* 白色背景 */
+            border-radius: 15px; /* 圓角邊框 */
+            overflow: hidden; /* 隱藏超出內容 */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* 輕微陰影 */
+            cursor: pointer; /* 滑鼠移入顯示指針 */
+            transition: transform 0.2s; /* 變形過渡效果 */
+        }
+        .menu-item:hover {
+            transform: translateY(-5px); /* 滑鼠移入時上移 */
+        }
+        .menu-item img {
+            width: 100%; /* 圖片寬度佔滿容器 */
+            height: 150px; /* 固定圖片高度 */
+            object-fit: cover; /* 圖片裁切填充 */
+            border-bottom: 2px solid #EBE4D5; /* 圖片下方邊框 */
+        }
+        .menu-content {
+            padding: 15px; /* 菜單內容內邊距 */
+        }
+        .menu-name {
+            font-size: 1.5rem; /* 菜單名稱字體大小 */
+            font-weight: bold; /* 字體加粗 */
+            color: #5C5346; /* 深棕色文字 */
+        }
+        .menu-price {
+            font-size: 1.2rem; /* 價格字體大小 */
+            color: #C06C59; /* 紅棕色價格文字 */
+            margin-top: 5px; /* 價格上方間距 */
+        }
+        .cart-container {
+            margin-top: 40px; /* 購物車上方間距 */
+            background-color: #fff;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .cart-title {
+            font-size: 2rem; /* 購物車標題字體大小 */
+            font-weight: bold;
+            border-bottom: 2px solid #EBE4D5;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
+        }
+        .cart-item {
+            display: flex; /* 使用 Flex 佈局 */
+            justify-content: space-between; /* 內容兩端對齊 */
+            align-items: center; /* 垂直置中 */
+            padding: 10px 0;
+            border-bottom: 1px solid #F0F0F0; /* 項目間分隔線 */
+        }
+        .cart-item:last-child {
+            border-bottom: none; /* 最後一個項目沒有分隔線 */
+        }
+        .cart-item-info {
+            flex-grow: 1; /* 訊息部分佔據剩餘空間 */
+        }
+        .cart-item-name {
+            font-size: 1.2rem; /* 購物車商品名稱字體大小 */
+        }
+        .cart-item-price {
+            font-size: 1.1rem; /* 購物車商品價格字體大小 */
+            color: #888;
+        }
+        .cart-controls {
+            display: flex;
+            align-items: center;
+        }
+        .cart-controls button {
+            background-color: #C06C59; /* 紅棕色按鈕背景 */
+            color: #fff;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%; /* 圓形按鈕 */
+            font-size: 1.5rem; /* 按鈕文字大小 */
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .cart-controls span {
+            font-size: 1.2rem; /* 數量文字大小 */
+            margin: 0 10px;
+        }
+        .total-price {
+            font-size: 2rem; /* 總計價格字體大小 */
+            font-weight: bold;
+            text-align: right; /* 右對齊 */
+            margin-top: 20px;
+        }
+        .checkout-btn {
+            display: block; /* 區塊顯示 */
+            width: 100%; /* 寬度佔滿 */
+            padding: 15px;
+            background-color: #C06C59;
+            color: #fff;
+            font-size: 1.5rem; /* 按鈕文字大小 */
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 20px;
+        }
+        .checkout-btn:hover {
+            background-color: #A95C4F; /* 滑鼠移入時顏色變深 */
+        }
+        .message-box {
+            position: fixed; /* 固定定位 */
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* 精準置中 */
+            background-color: rgba(255, 255, 255, 0.95); /* 半透明白色背景 */
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            text-align: center;
+            display: none; /* 預設隱藏 */
+            z-index: 1000; /* 層級最高 */
+        }
+        .message-box p {
+            font-size: 1.8rem; /* 訊息文字大小 */
+            font-weight: bold;
+            color: #5C5346;
+            margin-bottom: 20px;
+        }
+        .message-box button {
+            padding: 10px 30px;
+            background-color: #C06C59;
+            color: #fff;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        /* CSS 樣式結束 */
+    </style>
+    <!-- 引入 Google Noto Sans TC 字體，確保繁體中文顯示正常 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container">
+        <header class="header">
+            <h1 class="title">歡迎來到樂活點餐練習室</h1>
+            <p class="subtitle">點選您想吃的餐點，體驗簡單點餐流程！</p>
+        </header>
+
+        <section class="menu-grid" id="menu-items">
+            <!-- 菜單項目會由 JavaScript 動態生成 -->
+        </section>
+
+        <section class="cart-container">
+            <h2 class="cart-title">您的點餐籃</h2>
+            <div id="cart-items">
+                <!-- 購物車項目會由 JavaScript 動態生成 -->
+            </div>
+            <div class="total-price" id="total-price">
+                總計：NT$0
+            </div>
+            <button class="checkout-btn" id="checkout-btn">確認點餐</button>
+        </section>
+    </div>
+
+    <div class="message-box" id="message-box">
+        <p id="message-text">恭喜您，點餐成功！</p>
+        <button id="restart-btn">重新開始</button>
+    </div>
+
+    <script>
+        // JavaScript 腳本開始
+        // 模擬菜單資料，包含圖片網址
+        const menu = [
+            { id: 1, name: '香煎雞腿排', price: 180, image: 'https://placehold.co/400x300/C06C59/FFFFFF?text=雞腿排' },
+            { id: 2, name: '清蒸鱸魚', price: 250, image: 'https://placehold.co/400x300/F5B041/FFFFFF?text=清蒸鱸魚' },
+            { id: 3, name: '什錦炒飯', price: 120, image: 'https://placehold.co/400x300/AF7AC5/FFFFFF?text=什錦炒飯' },
+            { id: 4, name: '番茄蔬菜湯', price: 60, image: 'https://placehold.co/400x300/C06C59/FFFFFF?text=番茄蔬菜湯' },
+            { id: 5, name: '季節時蔬', price: 80, image: 'https://placehold.co/400x300/F5B041/FFFFFF?text=季節時蔬' },
+            { id: 6, name: '古早味紅茶', price: 40, image: 'https://placehold.co/400x300/AF7AC5/FFFFFF?text=古早味紅茶' },
+        ];
+
+        let cart = {}; // 購物車物件，存放已點餐點及數量
+
+        // 取得 HTML 元素
+        const menuEl = document.getElementById('menu-items');
+        const cartEl = document.getElementById('cart-items');
+        const totalEl = document.getElementById('total-price');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        const messageBox = document.getElementById('message-box');
+        const restartBtn = document.getElementById('restart-btn');
+
+        // 渲染菜單：將菜單項目動態呈現在網頁上
+        function renderMenu() {
+            menuEl.innerHTML = ''; // 清空現有菜單
+            menu.forEach(item => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'menu-item';
+                itemEl.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='https://placehold.co/400x300/888888/FFFFFF?text=圖片載入失敗';">
+                    <div class="menu-content">
+                        <div class="menu-name">${item.name}</div>
+                        <div class="menu-price">NT$${item.price}</div>
+                    </div>
+                `;
+                itemEl.onclick = () => addToCart(item.id); // 點擊項目時加入購物車
+                menuEl.appendChild(itemEl);
+            });
+        }
+
+        // 渲染購物車：更新購物車內容和總計
+        function renderCart() {
+            cartEl.innerHTML = ''; // 清空現有購物車內容
+            let total = 0; // 初始化總價
+            for (const id in cart) {
+                const item = menu.find(i => i.id == id); // 找到對應的菜單項目
+                if (item) {
+                    const quantity = cart[id]; // 取得數量
+                    total += item.price * quantity; // 計算單項總價
+                    const cartItemEl = document.createElement('div');
+                    cartItemEl.className = 'cart-item';
+                    cartItemEl.innerHTML = `
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">NT$${item.price} x ${quantity}</div>
+                        </div>
+                        <div class="cart-controls">
+                            <button onclick="changeQuantity(${id}, -1)">-</button> <!-- 減少數量按鈕 -->
+                            <span>${quantity}</span> <!-- 顯示數量 -->
+                            <button onclick="changeQuantity(${id}, 1)">+</button> <!-- 增加數量按鈕 -->
+                        </div>
+                    `;
+                    cartEl.appendChild(cartItemEl);
+                }
+            }
+            totalEl.textContent = `總計：NT$${total}`; // 更新總計顯示
+        }
+
+        // 加入購物車功能
+        function addToCart(id) {
+            cart[id] = (cart[id] || 0) + 1; // 增加數量，若無則設為1
+            renderCart(); // 更新購物車顯示
+        }
+
+        // 改變數量功能
+        function changeQuantity(id, delta) {
+            cart[id] += delta; // 依據 delta 調整數量
+            if (cart[id] <= 0) {
+                delete cart[id]; // 數量小於等於0時從購物車移除
+            }
+            renderCart(); // 更新購物車顯示
+        }
+
+        // 結帳功能
+        function handleCheckout() {
+            if (Object.keys(cart).length === 0) {
+                // 如果購物車是空的，顯示提示訊息（取代 alert()）
+                showMessage('您的點餐籃是空的，請先點選餐點喔！');
+                return;
+            }
+            showMessage('恭喜您，點餐成功！', true); // 顯示成功訊息
+        }
+
+        // 顯示訊息框
+        function showMessage(text, isSuccess = false) {
+            document.getElementById('message-text').textContent = text;
+            messageBox.style.display = 'block';
+            if (isSuccess) {
+                restartBtn.textContent = '再次練習'; // 成功訊息後按鈕改為「再次練習」
+            } else {
+                restartBtn.textContent = '關閉'; // 錯誤訊息後按鈕為「關閉」
+            }
+        }
+
+        // 重新開始或關閉訊息框
+        function restart() {
+            if (restartBtn.textContent === '再次練習') {
+                cart = {}; // 清空購物車
+                renderCart(); // 更新購物車顯示
+            }
+            messageBox.style.display = 'none'; // 隱藏訊息框
+        }
+
+        // 初始化：頁面載入完成後執行
+        document.addEventListener('DOMContentLoaded', () => {
+            renderMenu(); // 首次渲染菜單
+            renderCart(); // 首次渲染購物車
+            checkoutBtn.addEventListener('click', handleCheckout); // 綁定結帳按鈕事件
+            restartBtn.addEventListener('click', restart); // 綁定重新開始/關閉按鈕事件
+        });
+        // JavaScript 腳本結束
+    </script>
+</body>
+</html>
